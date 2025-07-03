@@ -1,4 +1,42 @@
+# Extração automática de Atestados Médicos
 
+**Período:** 2025.1
+**Aluno:** Caio Faria Diniz
+**Email:** caiodiniz200204@gmail.com
+
+---
+
+## Objetivo
+
+Automatizar a análise e validação de atestados médicos, reduzindo fraudes e agilizando processos internos de afastamento.
+
+---
+
+## Funcionalidades principais
+
+* Extrair informações do atestado, como nome do médico, CRM, CID e período de afastamento.
+* Validar se o CRM do médico está ativo utilizando APIs de conselhos médicos.
+* Verificar a coerência entre o tempo de afastamento e o código CID informado.
+* Gerar notificações automáticas para gestores e RH.
+* Armazenar um histórico de atestados para análises futuras.
+
+---
+
+## Metodologia
+
+* Aplicação de OCR e PLN para extração e categorização de dados.
+* Uso de APIs externas para validar CRMs de médicos e verificar autenticidade dos atestados.
+* Implementação de regras de verificação para identificar padrões suspeitos.
+
+---
+
+## Requisitos
+
+* Acesso a uma base de atestados médicos para treinamento do sistema.
+* Integração com bases médicas para validação de CRMs e códigos CID.
+* Definição de regras internas para aceitação ou rejeição automática de atestados.
+
+---
 # Diretrizes de Uso do Repositório
 
 ## 1. Configuração da chave SSH
