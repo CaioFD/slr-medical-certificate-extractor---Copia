@@ -1,7 +1,9 @@
 # Extração automática de Atestados Médicos
 
 **Período:** 2025.1
+
 **Aluno:** Caio Faria Diniz
+
 **Email:** caiodiniz200204@gmail.com
 
 ---
