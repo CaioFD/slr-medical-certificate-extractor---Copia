@@ -1,0 +1,26 @@
+# criar o venv:
+
+    python -m venv venv
+
+# ativar o venv:
+
+    # Linux
+    source venv/Scripts/activate
+
+    # Win
+    .\venv\Scripts\Activate.ps1
+
+# Entrar no DB:
+
+    sudo -u postgres psql
+
+    # Conectar no DB
+    
+        \c atestados_db 
+      
+
+# Depois de entrar no DB, acesse suas bases de dados:
+    
+    \dt
+
+uvicorn main:app --reload
