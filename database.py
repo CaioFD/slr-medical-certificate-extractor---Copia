@@ -2,6 +2,7 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 from atestado import Atestado
+from datetime import datetime
 
 load_dotenv()
 
@@ -114,3 +115,32 @@ class DB:
         except Exception as e:
             print(f"[ERRO] Falha ao buscar atestados filtrados: {e}")
     # def getAtestados(self, atestado_id=None, nome_paciente=None, nome_medico=None, data_atestado=None):
+
+
+    def insert_login(self, nome_usuario: str):
+        print(f"[DEBUG] Tentando inserir login para: {nome_usuario}")
+        try:
+            agora = datetime.now()
+            self.cur.execute("""
+                INSERT INTO logins (nome_usuario, data_hora_login)
+                VALUES (%s, %s)
+            """, (nome_usuario, agora))
+            self.conn.commit()
+            print(f"[INFO] Login registrado para {nome_usuario} em {agora}.")
+        except Exception as e:
+            print(f"[ERRO] Falha ao registrar login: {e}")
+
+    def get_logins(self, nome_usuario: str = None):
+        try:
+            query = "SELECT * FROM logins WHERE TRUE"
+            params = []
+            if nome_usuario:
+                query += " AND nome_usuario ILIKE %s"
+                params.append(f"%{nome_usuario}%")
+
+            self.cur.execute(query, tuple(params))
+            resultados = self.cur.fetchall()
+            return resultados
+        except Exception as e:
+            print(f"[ERRO] Falha ao buscar logins: {e}")
+            return []

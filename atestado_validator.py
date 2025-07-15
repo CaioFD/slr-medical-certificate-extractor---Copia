@@ -1,4 +1,3 @@
-# atestado_validator.py (versão refatorada)
 from database import DB
 from crm_validator import validate_crm
 from cid_validator import validate_cid
