@@ -79,7 +79,7 @@ narwhals==1.28.0
 nest-asyncio==1.6.0
 networkx==3.4.2
 nltk==3.9.1
-numpy==2.2.3
+numpy==2.3.1
 olefile==0.47
 opencv-contrib-python==4.11.0.86
 opencv-python==4.11.0.86
@@ -120,6 +120,7 @@ python-docx==1.1.2
 python-dotenv==1.0.1
 python-iso639==2025.2.18
 python-magic==0.4.27
+python-multipart==0.0.20
 python-oxmsg==0.0.2
 pytz==2025.2
 pywin32==308
@@ -167,6 +168,7 @@ unstructured==0.16.23
 unstructured-client==0.31.0
 uritemplate==4.1.1
 urllib3==2.3.0
+uvicorn==0.35.0
 watchdog==6.0.0
 wcwidth==0.2.13
 webdriver-manager==4.0.2

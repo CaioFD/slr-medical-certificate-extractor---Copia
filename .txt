@@ -24,3 +24,9 @@
     \dt
 
 uvicorn main:app --reload
+streamlit run interface.py
+
+
+
+SELECT * FROM logins ORDER BY data_hora_login DESC LIMIT 10;
+
