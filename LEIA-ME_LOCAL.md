@@ -5,6 +5,7 @@
 ## 📋 Arquivos Necessários para Rodar Localmente
 
 ### ✅ Arquivos OBRIGATÓRIOS:
+
 ```
 app_main_local.py        # Interface principal do Streamlit
 ocr_real_simple.py       # Processamento OCR simplificado
@@ -14,6 +15,7 @@ requirements_local.txt   # Dependências Python
 ```
 
 ### 🔄 Arquivos OPCIONAIS:
+
 ```
 .env_template           # Template de configuração
 LEIA-ME_LOCAL.md       # Este arquivo de instruções
@@ -22,11 +24,13 @@ LEIA-ME_LOCAL.md       # Este arquivo de instruções
 ## 🚀 Como Executar
 
 ### 1. Instalar Dependências:
+
 ```bash
 pip install -r requirements_local.txt
 ```
 
 ### 2. Configurar API (OBRIGATÓRIO):
+
 ```bash
 # Copie o template
 cp .env_template .env
@@ -36,11 +40,13 @@ GEMINI_API_KEY=sua_chave_aqui
 ```
 
 ### 3. Executar o Sistema:
+
 ```bash
 streamlit run app_main_local.py
 ```
 
 ### 4. Acessar no Navegador:
+
 ```
 http://localhost:8501
 ```
@@ -64,7 +70,9 @@ http://localhost:8501
 ## 🔧 Configurações Opcionais
 
 ### PostgreSQL (Opcional):
+
 Se quiser usar banco de dados real, configure no .env:
+
 ```
 PSQL_HOST=localhost
 PSQL_DB=atestados_db
@@ -73,11 +81,13 @@ PSQL_PASS=sua_senha
 ```
 
 ### Sem PostgreSQL:
+
 O sistema funciona perfeitamente sem banco, armazenando dados em memória.
 
 ## 📞 Suporte
 
 Em caso de problemas:
+
 1. Verifique se todas as dependências estão instaladas
 2. Confirme se a chave do Gemini está correta no .env
 3. Execute: `streamlit run app_main_local.py --server.headless true`
@@ -85,18 +95,21 @@ Em caso de problemas:
 ## 🎯 Resumo Rápido
 
 **Para funcionar localmente você precisa apenas:**
+
 1. `app_main_local.py`
-2. `ocr_real_simple.py` 
+2. `ocr_real_simple.py`
 3. `database_simple.py`
 4. `requirements_local.txt`
 5. `.env` (com chave do Gemini)
 
 **Comando para rodar:**
+
 ```bash
 streamlit run app_main_local.py
 ```
 
 **Login de teste:**
+
 - Email: admin@teste.com
 - Senha: 123456
 - Nome: Qualquer nome
