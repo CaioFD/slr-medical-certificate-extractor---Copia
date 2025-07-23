@@ -3,8 +3,8 @@ services:
     name: slr-medical-certificate-extractor
     env: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    buildCommand: pip install -r requirements.prod.txt
+    startCommand: streamlit run Interface.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0

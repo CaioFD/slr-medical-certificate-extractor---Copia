@@ -29,8 +29,8 @@ cd slr-medical-certificate-extractor
 
 # Faça push das modificações para deploy
 git add .
-git commit -m "Configurações para deploy no Render"
-git push origin main
+git commit -m "Configurações para deploy Streamlit no Render"
+git push origin research
 ```
 
 #### 2. **Configuração no Render**
@@ -42,9 +42,9 @@ git push origin main
    - **Name**: `slr-medical-certificate-extractor`
    - **Environment**: `Python 3`
    - **Region**: `Oregon (US West)` ou mais próximo
-   - **Branch**: `main` ou `research`
+   - **Branch**: `research`
    - **Build Command**: `pip install -r requirements.prod.txt`
-   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+   - **Start Command**: `streamlit run Interface.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false`
 
 #### 3. **Configurar Variáveis de Ambiente**
 
@@ -70,26 +70,38 @@ ENVIRONMENT=production
    - O Render automaticamente criará a variável `DATABASE_URL`
    - Anote as credenciais para uso local se necessário
 
-#### 5. **Deploy e Inicialização**
+#### 5. **Deploy e Teste**
 
 1. **Deploy Automático**: O Render iniciará o build automaticamente
-2. **Logs**: Monitore os logs durante o build
-3. **Inicializar Banco**: Após o primeiro deploy, execute uma vez:
-   ```bash
-   # Via Render Shell ou local
-   python init_db.py
-   ```
+2. **Aguarde**: Build do Streamlit pode levar 10-15 minutos
+3. **Teste a Interface**:
+   - **App Principal**: `https://seu-app.onrender.com/`
+   - **Login**: admin@teste.com / 123456
 
-#### 6. **Verificação**
+#### 6. **Funcionalidades Disponíveis**
 
-- **Health Check**: Acesse `https://seu-app.onrender.com/`
-- **API Docs**: Acesse `https://seu-app.onrender.com/docs`
-- **Test Endpoint**: Teste o endpoint de validação
+- ✅ **Interface Web Completa** - Streamlit como frontend principal
+- ✅ **Sistema de Login** - Autenticação com banco de dados
+- ✅ **Upload de Arquivos** - PDF, JPG, PNG suportados
+- ✅ **Validação Automática** - IA + OCR + APIs externas
+- ✅ **FastAPI Integrada** - Roda em background para processamento
+- ✅ **Dashboard Responsivo** - Interface moderna e intuitiva
 
 ### URLs de Produção
-- **API Base**: `https://slr-medical-certificate-extractor.onrender.com`
-- **Documentação**: `https://slr-medical-certificate-extractor.onrender.com/docs`
-- **Health Check**: `https://slr-medical-certificate-extractor.onrender.com/`
+- **Interface Principal**: `https://slr-medical-certificate-extractor.onrender.com`
+- **Sistema de Login**: Integrado na interface principal
+- **Upload e Validação**: Interface web interativa
+
+### 🎯 **Diferenças da Configuração Anterior**
+
+| Aspecto | Configuração Anterior | Nova Configuração |
+|---------|---------------------|-------------------|
+| **Interface Principal** | `/docs` (Swagger) | Streamlit Web App |
+| **Acesso** | Apenas desenvolvedores | Usuários finais |
+| **Login** | Endpoint `/login/` | Interface web integrada |
+| **Upload** | Via API/Postman | Drag & drop na web |
+| **Resultados** | JSON raw | Interface visual |
+| **Experiência** | Técnica | User-friendly |
 
 ---
 
