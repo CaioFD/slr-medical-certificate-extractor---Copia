@@ -10,14 +10,47 @@ from database import DB
 st.set_page_config(
     page_title="Sistema de Validação de Atestados Médicos", 
     page_icon="🏥",
-    layout="centered"
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
+
+# CSS para estabilizar a interface e evitar erros JS
+st.markdown("""
+<style>
+    /* Remove elementos que podem causar conflitos JS */
+    .reportview-container .main .block-container {
+        max-width: 800px;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+    
+    /* Estabiliza formulários */
+    .stTextInput > div > div > input {
+        background-color: white;
+    }
+    
+    /* Remove animações desnecessárias */
+    .element-container {
+        animation: none !important;
+    }
+    
+    /* Hide Streamlit menu and footer */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Disable default error handling */
+    .stException {display: none;}
+</style>
+""", unsafe_allow_html=True)
 
 # URL da API - detecta automaticamente se está em produção ou local
 if "RENDER" in os.environ:
     # Em produção no Render - vai funcionar apenas com validação local/banco
     # A validação via API será desabilitada por enquanto
     API_URL = None
+    # Configura ambiente de produção
+    os.environ["ENVIRONMENT"] = "production"
     st.info("🔄 Modo de produção: Validação simplificada ativada")
 else:
     # Desenvolvimento local
@@ -31,61 +64,66 @@ if "autenticado" not in st.session_state:
 
 def registrar_login(nome_usuario: str):
     """Insere um registro de login na tabela logins via database.py"""
-    db = DB()
-    db.conect()
     try:
+        db = DB()
+        db.conect()
+        
+        # Verifica se a conexão foi bem-sucedida
+        if db.conn is None:
+            st.warning("⚠️ Banco de dados não disponível. Login registrado apenas na sessão.")
+            return
+            
         db.insert_login(nome_usuario)
+        st.success("💾 Login registrado no banco de dados")
+        
     except Exception as e:
-        st.error(f"Falha ao registrar login no banco: {e}")
+        st.warning(f"⚠️ Não foi possível registrar no banco: {str(e)}")
+        print(f"[ERRO] Falha ao registrar login no banco: {e}")
     finally:
-        db.deconect()
+        try:
+            if 'db' in locals():
+                db.deconect()
+        except:
+            pass
 
 # === LOGIN ===
 if not st.session_state["autenticado"]:
-    # Header com logo/design
-    st.markdown("""
-    <div style="text-align: center; padding: 2rem 0;">
-        <h1>🏥 Sistema de Validação de Atestados Médicos</h1>
-        <p style="color: #666; font-size: 1.2rem;">Plataforma automatizada para validação de documentos médicos</p>
-    </div>
-    """, unsafe_allow_html=True)
+    # Header simples
+    st.title("🏥 Sistema de Validação de Atestados Médicos")
+    st.markdown("**Plataforma automatizada para validação de documentos médicos**")
+    st.markdown("---")
     
-    # Formulário de login centralizado
-    with st.container():
-        col1, col2, col3 = st.columns([1, 2, 1])
-        
-        with col2:
-            st.markdown("### 🔐 Acesso ao Sistema")
-            
-            with st.form("login_form"):
-                email = st.text_input("📧 Email", placeholder="admin@teste.com")
-                senha = st.text_input("🔒 Senha", type="password", placeholder="Sua senha")
-                nome = st.text_input("👤 Nome Completo", placeholder="Seu nome completo")
-                
-                submitted = st.form_submit_button("🚀 Entrar", use_container_width=True)
-                
-                if submitted:
-                    # Autenticação mockada
-                    if email == "admin@teste.com" and senha == "123456" and nome.strip() != "":
-                        # Primeiro registra o login no banco
-                        registrar_login(nome.strip())
-                        # Depois atualiza o estado da sessão
-                        st.session_state["autenticado"] = True
-                        st.session_state["nome_completo"] = nome.strip()
-                        st.session_state["email"] = email
-                        st.success("✅ Login realizado com sucesso!")
-                        st.rerun()
-                    else:
-                        st.error("❌ Credenciais inválidas ou nome não preenchido.")
-            
-            # Informações de acesso
-            with st.expander("ℹ️ Informações de Acesso"):
-                st.info("""
-                **Credenciais de teste:**
-                - Email: admin@teste.com
-                - Senha: 123456
-                - Nome: Qualquer nome válido
-                """)
+    # Formulário de login mais simples
+    st.subheader("🔐 Acesso ao Sistema")
+    
+    # Usando campos simples em vez de formulário complexo
+    email = st.text_input("📧 Email", value="", placeholder="admin@teste.com")
+    senha = st.text_input("🔒 Senha", type="password", value="", placeholder="Sua senha")
+    nome = st.text_input("👤 Nome Completo", value="", placeholder="Seu nome completo")
+    
+    # Botão de login
+    if st.button("🚀 Entrar", type="primary"):
+        # Autenticação mockada
+        if email == "admin@teste.com" and senha == "123456" and nome.strip() != "":
+            # Primeiro registra o login no banco
+            registrar_login(nome.strip())
+            # Depois atualiza o estado da sessão
+            st.session_state["autenticado"] = True
+            st.session_state["nome_completo"] = nome.strip()
+            st.session_state["email"] = email
+            st.success("✅ Login realizado com sucesso!")
+            st.rerun()
+        else:
+            st.error("❌ Credenciais inválidas ou nome não preenchido.")
+    
+    # Informações de acesso
+    with st.expander("ℹ️ Informações de Acesso"):
+        st.info("""
+        **Credenciais de teste:**
+        - Email: admin@teste.com
+        - Senha: 123456
+        - Nome: Qualquer nome válido
+        """)
 
 # === INTERFACE PRINCIPAL ===
 else:

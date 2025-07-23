@@ -1,0 +1,16 @@
+[server]
+headless = true
+enableCORS = false
+enableXsrfProtection = false
+enableWebsocketCompression = false
+
+[browser]
+gatherUsageStats = false
+
+[client]
+caching = false
+showErrorDetails = false
+
+[logger]
+level = "error"
+messageFormat = "%(asctime)s %(message)s"

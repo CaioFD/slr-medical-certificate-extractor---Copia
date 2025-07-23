@@ -16,8 +16,12 @@ class DB:
             # Tenta primeiro DATABASE_URL (formato padrão do Render)
             database_url = os.getenv("DATABASE_URL")
             
+            print(f"[DEBUG] DATABASE_URL encontrada: {bool(database_url)}")
+            print(f"[DEBUG] Variáveis de ambiente disponíveis: PSQL_HOST={os.getenv('PSQL_HOST')}, PSQL_DB={os.getenv('PSQL_DB')}")
+            
             if database_url:
                 # Se DATABASE_URL existe, usa ela diretamente
+                print(f"[DEBUG] Usando DATABASE_URL para conexão")
                 import urllib.parse as urlparse
                 urlparse.uses_netloc.append("postgres")
                 url = urlparse.urlparse(database_url)
@@ -31,6 +35,7 @@ class DB:
                 )
             else:
                 # Fallback para variáveis individuais (desenvolvimento local)
+                print(f"[DEBUG] Usando variáveis individuais para conexão")
                 self.conn = psycopg2.connect(
                     dbname=os.getenv("PSQL_DB", "atestados_db"),
                     user=os.getenv("PSQL_USER", "postgres"),
@@ -42,16 +47,64 @@ class DB:
             self.cur = self.conn.cursor()
             print("✅ Conexão com banco de dados estabelecida com sucesso!")
             
+            # Tenta criar tabelas se não existirem (apenas em produção)
+            if os.getenv("ENVIRONMENT") == "production":
+                self._create_tables_if_not_exist()
+            
         except Exception as e:
             print(f"[ERRO] Falha ao conectar com o banco: {e}")
+            # Em produção, não queremos que a aplicação pare por erro de banco
+            if os.getenv("ENVIRONMENT") == "production":
+                print("⚠️ Modo produção: Continuando sem banco de dados")
+                self.conn = None
+                self.cur = None
+                return
             raise e
+
+    def _create_tables_if_not_exist(self):
+        """Cria tabelas necessárias se não existirem"""
+        if not self.conn:
+            return
+            
+        try:
+            # Tabela de logins
+            self.cur.execute("""
+                CREATE TABLE IF NOT EXISTS logins (
+                    id SERIAL PRIMARY KEY,
+                    nome_usuario VARCHAR(255),
+                    data_hora_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+            
+            # Tabela de atestados
+            self.cur.execute("""
+                CREATE TABLE IF NOT EXISTS atestados (
+                    id SERIAL PRIMARY KEY,
+                    nome_funcionario VARCHAR(255),
+                    data_envio DATE,
+                    crm_medico VARCHAR(20),
+                    nome_medico VARCHAR(255),
+                    dias_afastado INTEGER,
+                    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            """)
+            
+            self.conn.commit()
+            print("✅ Tabelas criadas/verificadas com sucesso!")
+            
+        except Exception as e:
+            print(f"[AVISO] Erro ao criar tabelas: {e}")
     # def_connect(self):
 
     def deconect(self):
-        if self.cur:
-            self.cur.close()
-        if self.conn:
-            self.conn.close()
+        try:
+            if self.cur:
+                self.cur.close()
+            if self.conn:
+                self.conn.close()
+            print("[INFO] Conexão com banco encerrada.")
+        except Exception as e:
+            print(f"[ERRO] Erro ao fechar conexão: {e}")
     # def deconect(self):
 
     def insertAtestado(self, atestado: Atestado):
@@ -137,6 +190,10 @@ class DB:
 
 
     def insert_login(self, nome_usuario: str):
+        if not self.conn:
+            print("[AVISO] Banco não conectado. Registro de login ignorado.")
+            return
+            
         print(f"[DEBUG] Tentando inserir login para: {nome_usuario}")
         try:
             agora = datetime.now()
@@ -150,6 +207,10 @@ class DB:
             print(f"[ERRO] Falha ao registrar login: {e}")
 
     def get_logins(self, nome_usuario: str = None):
+        if not self.conn:
+            print("[AVISO] Banco não conectado. Retornando lista vazia.")
+            return []
+            
         try:
             query = "SELECT * FROM logins WHERE TRUE"
             params = []
