@@ -164,7 +164,7 @@ else:
     if API_URL:
         st.success("🟢 API local conectada")
     else:
-        st.warning("⚡ Modo de produção: Validação simplificada")
+        st.warning("� Modo de produção: Validação simplificada")
         st.info("💡 Em produção, a validação será feita diretamente sem API externa")
     
     # Upload de arquivo
@@ -205,7 +205,7 @@ else:
                             st.success("✅ **Atestado Válido!**")
                             
                             # Exibe os dados extraídos de forma organizada
-                            st.markdown("### 📋 Informações Extraídas do Atestado")
+                            st.markdown("### � Informações Extraídas do Atestado")
                             
                             # Organiza os dados em duas colunas
                             if isinstance(dados, dict):
@@ -228,6 +228,22 @@ else:
                                         st.info(f"**CRM:** {dados['crm']}")
                                     if "cid" in dados:
                                         st.info(f"**CID:** {dados['cid']}")
+                                
+                                # Seção adicional com mais detalhes se disponível
+                                st.markdown("#### 🏥 Informações Médicas")
+                                col3, col4 = st.columns(2)
+                                
+                                with col3:
+                                    if "cid" in dados:
+                                        st.success(f"**Diagnóstico (CID):** {dados['cid']}")
+                                    if "observacoes" in dados:
+                                        st.info(f"**Observações:** {dados['observacoes']}")
+                                        
+                                with col4:
+                                    if "dias_atestado" in dados:
+                                        st.success(f"**Período Afastamento:** {dados['dias_atestado']} dias")
+                                    if "data_atendimento" in dados:
+                                        st.info(f"**Data Início:** {dados['data_atendimento']}")
                                 
                                 # Resumo em formato de tabela
                                 st.markdown("#### 📊 Resumo Completo")
@@ -315,92 +331,92 @@ else:
                             "arquivo_processado": arquivo.name,
                             "data_processamento": time.strftime('%Y-%m-%d %H:%M:%S')
                         }
-                        
-                        # Exibe os dados extraídos de forma organizada
-                        st.markdown("### 📋 Informações Extraídas do Atestado")
-                        
-                        # Organiza os dados em duas colunas
-                        col1, col2 = st.columns(2)
-                        
-                        with col1:
-                            st.markdown("#### 👤 Dados do Paciente")
-                            st.info(f"**Nome:** {dados_extraidos['nome_paciente']}")
-                            st.info(f"**Data Atendimento:** {dados_extraidos['data_atendimento']}")
-                            st.info(f"**Dias de Atestado:** {dados_extraidos['dias_atestado']} dias")
                             
-                        with col2:
-                            st.markdown("#### 👨‍⚕️ Dados do Médico")
-                            st.info(f"**Nome:** {dados_extraidos['nome_medico']}")
-                            st.info(f"**CRM:** {dados_extraidos['crm_medico']}")
-                            st.info(f"**CID:** {dados_extraidos['cid']}")
-                        
-                        # Seção adicional com mais detalhes
-                        st.markdown("#### 🏥 Informações Médicas")
-                        col3, col4 = st.columns(2)
-                        
-                        with col3:
-                            st.success(f"**Diagnóstico (CID):** {dados_extraidos['cid']}")
-                            st.info(f"**Descrição:** {dados_extraidos['observacoes']}")
+                            # Exibe os dados extraídos de forma organizada
+                            st.markdown("### 📋 Informações Extraídas do Atestado")
                             
-                        with col4:
-                            st.success(f"**Período Afastamento:** {dados_extraidos['dias_atestado']} dias")
-                            st.info(f"**Data Início:** {dados_extraidos['data_atendimento']}")
-                        
-                        # Informações técnicas do processamento
-                        st.markdown("#### ⚙️ Detalhes do Processamento")
-                        col5, col6 = st.columns(2)
-                        
-                        with col5:
-                            st.metric("📄 Arquivo", dados_extraidos['arquivo_processado'])
-                            st.metric("📅 Processado em", dados_extraidos['data_processamento'])
+                            # Organiza os dados em duas colunas
+                            col1, col2 = st.columns(2)
                             
-                        with col6:
-                            st.metric("📏 Tamanho", f"{len(file_content)} bytes")
-                            st.metric("✅ Status", "Válido")
-                        
-                        # Resumo em formato de tabela
-                        st.markdown("#### 📊 Resumo Completo")
-                        
-                        # Cria DataFrame para exibição em tabela
-                        import pandas as pd
-                        
-                        resumo_data = {
-                            "Campo": [
-                                "Nome do Paciente",
-                                "Nome do Médico", 
-                                "CRM do Médico",
-                                "CID",
-                                "Dias de Atestado",
-                                "Data de Atendimento",
-                                "Status da Validação"
-                            ],
-                            "Valor": [
-                                dados_extraidos['nome_paciente'],
-                                dados_extraidos['nome_medico'],
-                                dados_extraidos['crm_medico'],
-                                dados_extraidos['cid'],
-                                f"{dados_extraidos['dias_atestado']} dias",
-                                dados_extraidos['data_atendimento'],
-                                "✅ Válido"
-                            ]
-                        }
-                        
-                        df_resumo = pd.DataFrame(resumo_data)
-                        st.dataframe(df_resumo, use_container_width=True, hide_index=True)
-                        
-                        # Mostra JSON completo em expansível
-                        with st.expander("🔍 Ver dados técnicos completos (JSON)"):
-                            st.json(dados_extraidos)
-                        
-                        # Salva no banco se possível
-                        try:
-                            registrar_login(f"Validação: {arquivo.name} - {st.session_state['nome_completo']}")
-                            st.success("💾 Validação registrada no banco de dados")
+                            with col1:
+                                st.markdown("#### 👤 Dados do Paciente")
+                                st.info(f"**Nome:** {dados_extraidos['nome_paciente']}")
+                                st.info(f"**Data Atendimento:** {dados_extraidos['data_atendimento']}")
+                                st.info(f"**Dias de Atestado:** {dados_extraidos['dias_atestado']} dias")
+                                
+                            with col2:
+                                st.markdown("#### 👨‍⚕️ Dados do Médico")
+                                st.info(f"**Nome:** {dados_extraidos['nome_medico']}")
+                                st.info(f"**CRM:** {dados_extraidos['crm_medico']}")
+                                st.info(f"**CID:** {dados_extraidos['cid']}")
+                            
+                            # Seção adicional com mais detalhes
+                            st.markdown("#### 🏥 Informações Médicas")
+                            col3, col4 = st.columns(2)
+                            
+                            with col3:
+                                st.success(f"**Diagnóstico (CID):** {dados_extraidos['cid']}")
+                                st.info(f"**Descrição:** {dados_extraidos['observacoes']}")
+                                
+                            with col4:
+                                st.success(f"**Período Afastamento:** {dados_extraidos['dias_atestado']} dias")
+                                st.info(f"**Data Início:** {dados_extraidos['data_atendimento']}")
+                            
+                            # Informações técnicas do processamento
+                            st.markdown("#### ⚙️ Detalhes do Processamento")
+                            col5, col6 = st.columns(2)
+                            
+                            with col5:
+                                st.metric("📄 Arquivo", dados_extraidos['arquivo_processado'])
+                                st.metric("📅 Processado em", dados_extraidos['data_processamento'])
+                                
+                            with col6:
+                                st.metric("📏 Tamanho", f"{len(file_content)} bytes")
+                                st.metric("✅ Status", "Válido")
+                            
+                            # Resumo em formato de tabela
+                            st.markdown("#### � Resumo Completo")
+                            
+                            # Cria DataFrame para exibição em tabela
+                            import pandas as pd
+                            
+                            resumo_data = {
+                                "Campo": [
+                                    "Nome do Paciente",
+                                    "Nome do Médico", 
+                                    "CRM do Médico",
+                                    "CID",
+                                    "Dias de Atestado",
+                                    "Data de Atendimento",
+                                    "Status da Validação"
+                                ],
+                                "Valor": [
+                                    dados_extraidos['nome_paciente'],
+                                    dados_extraidos['nome_medico'],
+                                    dados_extraidos['crm_medico'],
+                                    dados_extraidos['cid'],
+                                    f"{dados_extraidos['dias_atestado']} dias",
+                                    dados_extraidos['data_atendimento'],
+                                    "✅ Válido"
+                                ]
+                            }
+                            
+                            df_resumo = pd.DataFrame(resumo_data)
+                            st.dataframe(df_resumo, use_container_width=True, hide_index=True)
+                            
+                            # Mostra JSON completo em expansível
+                            with st.expander("🔍 Ver dados técnicos completos (JSON)"):
+                                st.json(dados_extraidos)
+                            
+                            # Salva no banco se possível
+                            try:
+                                registrar_login(f"Validação: {arquivo.name} - {st.session_state['nome_completo']}")
+                                st.success("💾 Validação registrada no banco de dados")
+                            except:
+                                st.warning("⚠️ Não foi possível salvar no banco (normal em primeira execução)")
+                                
                         except Exception as e:
-                            st.warning("⚠️ Não foi possível salvar no banco (normal em primeira execução)")
-                            
-                    except Exception as e:
-                        st.error(f"🔴 **Erro no processamento:** {str(e)}")
+                            st.error(f"🔴 **Erro no processamento:** {str(e)}")
     
     else:
         # Instruções quando nenhum arquivo foi carregado
@@ -422,3 +438,59 @@ else:
         <p>Desenvolvido por Caio Faria Diniz | 2025</p>
     </div>
     """, unsafe_allow_html=True)
+
+
+
+# import streamlit as st
+# import requests
+# import os
+
+# st.set_page_config(page_title="Validação de Atestados", layout="centered")
+
+# API_URL = "http://127.0.0.1:8000"  # Altere para o endereço da API se estiver online
+
+# # Inicializa as variáveis no session_state para evitar erros
+# if "autenticado" not in st.session_state:
+#     st.session_state["autenticado"] = False
+# if "nome_completo" not in st.session_state:
+#     st.session_state["nome_completo"] = ""
+
+# # === LOGIN ===
+# if not st.session_state["autenticado"]:
+#     st.title("🔐 Login")
+
+#     email = st.text_input("Email")
+#     senha = st.text_input("Senha", type="password")
+#     nome = st.text_input("Nome Completo")
+
+#     if st.button("Entrar"):
+#         if email == "admin@teste.com" and senha == "123456" and nome.strip() != "":
+#             st.session_state["autenticado"] = True
+#             st.session_state["nome_completo"] = nome.strip()
+#             st.session_state["email"] = email
+#             # st.experimental_rerun() 
+#         else:
+#             st.error("Credenciais inválidas ou nome não preenchido.")
+
+# # === INTERFACE PRINCIPAL ===
+# if st.session_state["autenticado"]:
+#     st.success(f"Usuário autenticado: {st.session_state['nome_completo']} ({st.session_state['email']})")
+#     st.title("📄 Validar Atestado")
+
+#     arquivo = st.file_uploader("Envie um arquivo de atestado (.pdf, .jpg, .png)", type=["pdf", "jpg", "jpeg", "png"])
+
+#     if arquivo and st.button("Validar"):
+#         with st.spinner("Enviando e validando..."):
+#             files = {"file": (arquivo.name, arquivo.read(), arquivo.type)}
+#             try:
+#                 response = requests.post(f"{API_URL}/validar_atestado/", files=files)
+#                 if response.status_code == 200:
+#                     dados = response.json()
+#                     st.success("✅ Atestado válido!")
+#                     st.json(dados)
+#                 else:
+#                     erro = response.json()
+#                     st.error("❌ Atestado inválido!")
+#                     st.json(erro)
+#             except Exception as e:
+#                 st.error(f"Erro ao conectar com a API: {e}")
