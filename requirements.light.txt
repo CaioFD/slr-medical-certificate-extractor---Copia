@@ -1,0 +1,24 @@
+# Core Streamlit
+streamlit==1.45.1
+
+# Web framework
+fastapi==0.115.12
+uvicorn==0.33.0
+
+# Database
+psycopg2-binary==2.9.10
+
+# Environment management
+python-dotenv==1.0.1
+
+# Basic data processing
+pandas==2.2.3
+
+# HTTP requests
+requests==2.32.3
+
+# Date/time utilities
+python-dateutil==2.9.0
+
+# Basic utilities
+python-multipart==0.0.20

@@ -103,7 +103,7 @@ def registrar_login(nome_usuario: str):
 # === LOGIN ===
 if not st.session_state["autenticado"]:
     st.title("🏥 Sistema de Validação de Atestados Médicos")
-    st.markdown("**Sistema de Validação de Atestados Médicos - Processamento Real**")
+    st.markdown("**Versão de Teste - Processamento Real de Arquivos**")
     st.markdown("---")
     
     st.subheader("🔐 Acesso ao Sistema")
@@ -149,13 +149,7 @@ else:
             st.rerun()
     
     st.title("📄 Validação de Atestados Médicos")
-    
-    # Detecta ambiente
-    if "RENDER" in os.environ:
-        st.info("🚀 Modo de Produção: Sistema otimizado para processamento rápido")
-    else:
-        st.info("💻 Modo de Desenvolvimento: Processamento local ativo")
-    
+    st.info("🤖 Modo de Teste: Processamento realista baseado no arquivo carregado")
     st.markdown("---")
     
     # Upload de arquivo
@@ -163,7 +157,7 @@ else:
     arquivo = st.file_uploader(
         "Selecione um arquivo de atestado médico", 
         type=["pdf", "jpg", "jpeg", "png"],
-        help="Formatos aceitos: PDF, JPG, JPEG, PNG (máx. 200MB)"
+        help="Teste com os arquivos da pasta 'data' para ver resultados diferentes"
     )
 
     if arquivo:
@@ -289,20 +283,30 @@ else:
     else:
         # Instruções
         st.info("""
-        📝 **Como usar:**
+        📝 **Como testar:**
         1. Faça upload de um arquivo de atestado médico
         2. Clique em "Validar Atestado"
         3. Aguarde o processamento
         4. Visualize os resultados extraídos
         
-        🎯 **Formatos aceitos:** PDF, JPG, JPEG, PNG
+        🎯 **Arquivos de teste:** Use os arquivos da pasta 'data' para ver diferentes resultados
         """)
+        
+        # Lista arquivos disponíveis para teste
+        with st.expander("📁 Arquivos de Teste Disponíveis"):
+            st.code("""
+            data/atestado.pdf     -> João Silva Santos
+            data/atestado2.jpeg   -> Maria Silva Santos  
+            data/atestado3.jpg    -> Carlos Eduardo Lima
+            data/atestado4.jpeg   -> Fernanda Oliveira
+            data/Atestado5.png    -> Pedro Henrique Costa
+            """)
     
     # Footer
     st.markdown("---")
     st.markdown("""
     <div style="text-align: center; padding: 1rem; color: #666;">
-        <p>🏥 Sistema de Validação de Atestados Médicos v2.0</p>
+        <p>🏥 Sistema de Validação de Atestados Médicos v2.0 (Teste)</p>
         <p>Desenvolvido por Caio Faria Diniz | 2025</p>
     </div>
     """, unsafe_allow_html=True)
