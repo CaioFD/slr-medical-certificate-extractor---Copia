@@ -1,0 +1,3 @@
+# Dependências mínimas para o app standalone
+streamlit==1.45.1
+pandas==2.2.3

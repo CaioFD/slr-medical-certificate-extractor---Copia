@@ -1,0 +1,26 @@
+# === ARQUIVO: requirements_local.txt ===
+# Dependências para execução local
+
+# Core Streamlit
+streamlit==1.45.1
+
+# Data processing
+pandas==2.2.3
+
+# Environment variables
+python-dotenv==1.0.1
+
+# Google Gemini AI (para OCR real)
+google-generativeai>=0.3.0
+
+# Image processing
+Pillow>=9.0.0
+
+# PDF processing (opcional)
+pdf2image>=3.1.0
+
+# Database (opcional - se quiser usar banco)
+psycopg2-binary==2.9.10
+
+# HTTP requests
+requests>=2.28.0
