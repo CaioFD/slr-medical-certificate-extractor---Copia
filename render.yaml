@@ -4,7 +4,7 @@ services:
     env: python
     plan: free
     buildCommand: pip install -r requirements.prod.txt
-    startCommand: python app.py
+    startCommand: python -m streamlit run streamlit_app.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
