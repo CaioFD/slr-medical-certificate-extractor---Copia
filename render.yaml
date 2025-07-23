@@ -10,7 +10,7 @@ services:
         value: 3.11.0
       - key: API_KEY
         sync: false
-      - key: CFM_API_KEY  
+      - key: CFM_API_KEY
         sync: false
       - key: PSQL_HOST
         sync: false
