@@ -9,7 +9,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv("API_KEY"))
+# Tenta primeiro GEMINI_API_KEY, depois API_KEY para compatibilidade
+api_key = os.getenv("GEMINI_API_KEY") or os.getenv("API_KEY")
+genai.configure(api_key=api_key)
 
 def extrair_informacoes_arquivo(arquivo):
     try:

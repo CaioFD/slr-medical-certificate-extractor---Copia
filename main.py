@@ -2,11 +2,25 @@ import os
 import shutil
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import JSONResponse, HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 from atestado_validator import validate_atestado
 from auth import autenticar_usuario
 from models import User
 
-app = FastAPI()
+app = FastAPI(
+    title="API de Validação de Atestados Médicos",
+    description="Sistema automatizado para validação de atestados médicos",
+    version="1.0.0"
+)
+
+# Configurar CORS para aceitar requisições de qualquer origem em produção
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Em produção, especifique os domínios permitidos
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Diretório temporário para arquivos
 TEMP_DIR = "temp"

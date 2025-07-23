@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: slr-medical-certificate-extractor
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: API_KEY
+        sync: false
+      - key: CFM_API_KEY  
+        sync: false
+      - key: PSQL_HOST
+        sync: false
+      - key: PSQL_PORT
+        sync: false
+      - key: PSQL_DB
+        sync: false
+      - key: PSQL_PASS
+        sync: false
+      - key: PSQL_USER
+        sync: false
+
+  - type: pgsql
+    name: slr-medical-db
+    databaseName: atestados_db
+    user: postgres
+    plan: free

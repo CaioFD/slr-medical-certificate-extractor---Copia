@@ -12,6 +12,85 @@
 
 Este sistema automatiza a análise, extração e validação de atestados médicos digitais, utilizando tecnologias de OCR (Reconhecimento Óptico de Caracteres), processamento de linguagem natural e integração com APIs externas para validação de dados médicos. O objetivo é reduzir fraudes, agilizar processos de RH e garantir a autenticidade dos documentos médicos.
 
+## 🚀 Deploy no Render
+
+### Pré-requisitos
+1. Conta no [Render](https://render.com)
+2. Repositório do projeto no GitHub
+3. Chaves de API do Google Gemini e CFM
+
+### Passo a Passo do Deploy
+
+#### 1. **Preparação do Repositório**
+```bash
+# Clone o repositório
+git clone https://github.com/SolidesTech/slr-medical-certificate-extractor.git
+cd slr-medical-certificate-extractor
+
+# Faça push das modificações para deploy
+git add .
+git commit -m "Configurações para deploy no Render"
+git push origin main
+```
+
+#### 2. **Configuração no Render**
+
+1. **Login no Render**: Acesse [render.com](https://render.com) e faça login
+2. **Novo Web Service**: Clique em "New" → "Web Service"
+3. **Conectar Repositório**: Conecte seu repositório GitHub
+4. **Configurações Básicas**:
+   - **Name**: `slr-medical-certificate-extractor`
+   - **Environment**: `Python 3`
+   - **Region**: `Oregon (US West)` ou mais próximo
+   - **Branch**: `main` ou `research`
+   - **Build Command**: `pip install -r requirements.prod.txt`
+   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+
+#### 3. **Configurar Variáveis de Ambiente**
+
+No painel do Render, adicione as seguintes variáveis de ambiente:
+
+```env
+API_KEY=sua_chave_google_gemini
+GEMINI_API_KEY=sua_chave_google_gemini
+CFM_API_KEY=sua_chave_cfm
+ENVIRONMENT=production
+```
+
+#### 4. **Configurar Banco PostgreSQL**
+
+1. **Criar PostgreSQL Database**:
+   - No Render, clique em "New" → "PostgreSQL"
+   - **Name**: `slr-medical-db`
+   - **Database Name**: `atestados_db`
+   - **User**: `postgres`
+   - **Region**: Mesmo da aplicação
+
+2. **Conectar Banco ao Web Service**:
+   - O Render automaticamente criará a variável `DATABASE_URL`
+   - Anote as credenciais para uso local se necessário
+
+#### 5. **Deploy e Inicialização**
+
+1. **Deploy Automático**: O Render iniciará o build automaticamente
+2. **Logs**: Monitore os logs durante o build
+3. **Inicializar Banco**: Após o primeiro deploy, execute uma vez:
+   ```bash
+   # Via Render Shell ou local
+   python init_db.py
+   ```
+
+#### 6. **Verificação**
+
+- **Health Check**: Acesse `https://seu-app.onrender.com/`
+- **API Docs**: Acesse `https://seu-app.onrender.com/docs`
+- **Test Endpoint**: Teste o endpoint de validação
+
+### URLs de Produção
+- **API Base**: `https://slr-medical-certificate-extractor.onrender.com`
+- **Documentação**: `https://slr-medical-certificate-extractor.onrender.com/docs`
+- **Health Check**: `https://slr-medical-certificate-extractor.onrender.com/`
+
 ---
 
 ## 🚀 Funcionalidades Principais

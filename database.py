@@ -13,19 +13,38 @@ class DB:
 
     def conect(self):
         try:
-            # print("os.getenv('PSQL_DB')", os.getenv("PSQL_DB"))
-            # print("os.getenv('PSQL_USER')", os.getenv("PSQL_USER"))
-            # print("os.getenv('PSQL_PASS')", os.getenv("PSQL_PASS"))
-            # print("os.getenv('PSQL_HOST')", os.getenv("PSQL_HOST"))
-            self.conn = psycopg2.connect(
-                dbname="atestados_db",
-                user=os.getenv("PSQL_USER"),
-                password=os.getenv("PSQL_PASS"),
-                host=os.getenv("PSQL_HOST", "localhost"),
-            )
+            # Tenta primeiro DATABASE_URL (formato padrão do Render)
+            database_url = os.getenv("DATABASE_URL")
+            
+            if database_url:
+                # Se DATABASE_URL existe, usa ela diretamente
+                import urllib.parse as urlparse
+                urlparse.uses_netloc.append("postgres")
+                url = urlparse.urlparse(database_url)
+                
+                self.conn = psycopg2.connect(
+                    database=url.path[1:],
+                    user=url.username,
+                    password=url.password,
+                    host=url.hostname,
+                    port=url.port
+                )
+            else:
+                # Fallback para variáveis individuais (desenvolvimento local)
+                self.conn = psycopg2.connect(
+                    dbname=os.getenv("PSQL_DB", "atestados_db"),
+                    user=os.getenv("PSQL_USER", "postgres"),
+                    password=os.getenv("PSQL_PASS", "admin"),
+                    host=os.getenv("PSQL_HOST", "localhost"),
+                    port=os.getenv("PSQL_PORT", "5432")
+                )
+                
             self.cur = self.conn.cursor()
+            print("✅ Conexão com banco de dados estabelecida com sucesso!")
+            
         except Exception as e:
-            print(f"[ERRO] Falha ao conectar: {e}")
+            print(f"[ERRO] Falha ao conectar com o banco: {e}")
+            raise e
     # def_connect(self):
 
     def deconect(self):
