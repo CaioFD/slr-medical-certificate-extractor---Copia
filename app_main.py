@@ -3,6 +3,7 @@ import os
 import time
 import tempfile
 from database import DB
+from ocr_real import processar_atestado_real, verificar_configuracao
 
 # Configuração da página
 st.set_page_config(
@@ -21,70 +22,31 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Função simplificada para processar arquivo (simulação mais realista)
-def processar_atestado_simples(arquivo):
-    """Simula processamento de atestado com base no nome do arquivo"""
-    
-    # Simulação baseada no nome do arquivo para demonstração
-    nome_arquivo = arquivo.name.lower()
-    
-    if "atestado" in nome_arquivo:
-        if "2" in nome_arquivo:
-            return {
-                "nome_paciente": "Maria Silva Santos",
-                "nome_medico": "Dr. João Pereira",
-                "crm_medico": "54321/RJ", 
-                "cid": "Z76.3",
-                "dias_atestado": "5",
-                "data_atendimento": "2025-01-22"
-            }
-        elif "3" in nome_arquivo:
-            return {
-                "nome_paciente": "Carlos Eduardo Lima",
-                "nome_medico": "Dra. Ana Costa",
-                "crm_medico": "98765/MG",
-                "cid": "M79.1", 
-                "dias_atestado": "7",
-                "data_atendimento": "2025-01-23"
-            }
-        elif "4" in nome_arquivo:
-            return {
-                "nome_paciente": "Fernanda Oliveira",
-                "nome_medico": "Dr. Roberto Silva",
-                "crm_medico": "11111/SP",
-                "cid": "K59.0",
-                "dias_atestado": "2", 
-                "data_atendimento": "2025-01-21"
-            }
-        elif "5" in nome_arquivo:
-            return {
-                "nome_paciente": "Pedro Henrique Costa",
-                "nome_medico": "Dra. Lucia Santos",
-                "crm_medico": "22222/RS",
-                "cid": "J06.9",
-                "dias_atestado": "4",
-                "data_atendimento": "2025-01-20"
-            }
+# Verifica se a API está configurada
+api_configurada = verificar_configuracao()
+
+def processar_atestado_completo(arquivo):
+    """Processa atestado usando OCR real com Gemini"""
+    try:
+        if not api_configurada:
+            st.error("❌ **API do Gemini não configurada**")
+            st.info("Configure a variável GEMINI_API_KEY no arquivo .env")
+            return None
+            
+        # Lê o arquivo
+        arquivo_bytes = arquivo.read()
+        
+        # Processa com OCR real
+        dados = processar_atestado_real(arquivo_bytes, arquivo.name)
+        
+        if dados:
+            return dados
         else:
-            # Arquivo padrão
-            return {
-                "nome_paciente": "João Silva Santos",
-                "nome_medico": "Dr. Maria Oliveira Costa",
-                "crm_medico": "12345/SP",
-                "cid": "J06.9",
-                "dias_atestado": "3",
-                "data_atendimento": "2025-01-20"
-            }
-    else:
-        # Para outros arquivos
-        return {
-            "nome_paciente": "Paciente de Teste",
-            "nome_medico": "Dr. Médico de Teste",
-            "crm_medico": "00000/XX",
-            "cid": "Z00.0",
-            "dias_atestado": "1",
-            "data_atendimento": "2025-01-23"
-        }
+            return None
+            
+    except Exception as e:
+        st.error(f"Erro no processamento: {str(e)}")
+        return None
 
 # Inicializa session_state
 if "autenticado" not in st.session_state:
@@ -150,6 +112,12 @@ else:
     
     st.title("📄 Validação de Atestados Médicos")
     
+    # Status da API
+    if api_configurada:
+        st.success("🤖 IA Gemini: Conectada e pronta para processar documentos reais")
+    else:
+        st.error("❌ IA Gemini: Não configurada - Configure GEMINI_API_KEY no arquivo .env")
+    
     # Detecta ambiente
     if "RENDER" in os.environ:
         st.info("🚀 Modo de Produção: Sistema otimizado para processamento rápido")
@@ -163,7 +131,7 @@ else:
     arquivo = st.file_uploader(
         "Selecione um arquivo de atestado médico", 
         type=["pdf", "jpg", "jpeg", "png"],
-        help="Formatos aceitos: PDF, JPG, JPEG, PNG (máx. 200MB)"
+        help="Formatos aceitos: PDF, JPG, JPEG, PNG - O sistema extrairá informações reais do documento usando IA"
     )
 
     if arquivo:
@@ -179,14 +147,14 @@ else:
         
         # Botão de validação
         if st.button("🔍 Validar Atestado", type="primary", use_container_width=True):
-            with st.spinner("🔄 Processando documento... Analisando conteúdo..."):
+            with st.spinner("🔄 Processando documento com IA... Extraindo informações reais do atestado..."):
                 
                 try:
                     # Simula tempo de processamento
                     time.sleep(3)
                     
-                    # Processa o arquivo baseado no nome
-                    dados_extraidos = processar_atestado_simples(arquivo)
+                    # Processa o arquivo com OCR real
+                    dados_extraidos = processar_atestado_completo(arquivo)
                     
                     if dados_extraidos:
                         # Resultado positivo
